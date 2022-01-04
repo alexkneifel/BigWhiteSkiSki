@@ -34,6 +34,9 @@ public class JumpingMasterAgent : Agent{
         rb = GetComponent<Rigidbody2D>();
         count = 0;
     }
+    /**These are the observations that we pass that the AI learns from.
+     * At the top, I attempted to pass position and size of each obstacle, but was giving me problems.
+     **/
     public override void CollectObservations(VectorSensor sensor)
     {
         //GameObject.FindWithTag("Obstacle").transform.position;
@@ -87,6 +90,11 @@ public class JumpingMasterAgent : Agent{
         sensor.AddObservation(transform.position);
     }
 
+    /**
+     * Will choose random int in 0,1,2 for movement; and 0,1 for jump.
+     * movement: 0 stay still, 1 to the right, 2 to the left
+     * jump: 0 don't jump, 1 jump
+    **/
     public override void OnActionReceived(ActionBuffers actions)
     {
 
@@ -97,7 +105,9 @@ public class JumpingMasterAgent : Agent{
             movement = -1;
         }
     }
-
+    /**
+     * Penalized for running into an obstacle, count reward resets, and episode ends.
+     **/
     void OnTriggerEnter2D(Collider2D col)
     {
         if (col.gameObject.CompareTag("Obstacle"))
@@ -114,9 +124,11 @@ public class JumpingMasterAgent : Agent{
         rb.velocity = new Vector2(movement * speed, rb.velocity.y);
 
     }
+    /**
+     * This is where the reward is given based on an incrementing count variable. Also is the control for when the character can jump.
+     **/
     private void Update()
     {
-        // this is reward that is larger as he stays longer in the world, nice !
         count++;
         print(count);
         SetReward((float)count);
