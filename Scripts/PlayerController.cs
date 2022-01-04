@@ -17,7 +17,17 @@ public class PlayerController : MonoBehaviour
 
     private float jumpTimeCounter;
     public float jumpTime;
+    //private bool robot;
 
+    //public PlayerController(){
+    //    print("instantiated player controller");
+    //    robot = false; 
+    //    }
+    //public PlayerController(int Robot)
+    //{
+    //    print("instantiated robot controller");
+    //    robot = true;
+    //}
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -25,6 +35,8 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         moveInput = Input.GetAxisRaw("Horizontal");
+        //print("Horizontal movement: ");
+        //print(moveInput);
         rb.velocity = new Vector2(moveInput * speed, rb.velocity.y);
         
     }
@@ -36,6 +48,7 @@ public class PlayerController : MonoBehaviour
         {
             isJumping = true;
             jumpTimeCounter = jumpTime;
+            //vector2.up is shorthand for (0,1)
             rb.velocity = Vector2.up * jumpForce;
 
         }
@@ -44,6 +57,8 @@ public class PlayerController : MonoBehaviour
             if (jumpTimeCounter > 0)
             {
                 rb.velocity = Vector2.up * jumpForce;
+                    //print("Up Velocity: ");
+                    //print(rb.velocity);
                 jumpTimeCounter -= Time.deltaTime;
             }
             else

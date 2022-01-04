@@ -4,9 +4,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
+
+// this is where I need to make it so if it is the robot then continue playing
 public class GameControl : MonoBehaviour
 {
-
 	public static GameControl instance = null;
 
 	[SerializeField]
@@ -58,12 +59,14 @@ public class GameControl : MonoBehaviour
 	public GameObject[] characterPrefabs;
 	public Transform spawnPointChar;
 
+	int selectedCharacter = 0;
+
 
 	// Use this for initialization
 	void Start()
 	{
 
-		int selectedCharacter = PlayerPrefs.GetInt("selectedCharacter");
+		selectedCharacter = PlayerPrefs.GetInt("selectedCharacter");
 		GameObject prefab = characterPrefabs[selectedCharacter];
 		GameObject clone = Instantiate(prefab, spawnPointChar.position, Quaternion.identity);
 
@@ -71,6 +74,12 @@ public class GameControl : MonoBehaviour
 			instance = this;
 		else if (instance != this)
 			Destroy(gameObject);
+
+		if (selectedCharacter == 3)
+        {
+			print("Robot selected");
+        }
+
 
 		leaderboardButton.SetActive(false);
 		submitButton.SetActive(false);
@@ -113,12 +122,21 @@ public class GameControl : MonoBehaviour
 		Time.timeScale = 0;
 		gameStopped = true;
 
-		leaderboardButton.SetActive(true);
-		submitButton.SetActive(true);
-		nameForScore.SetActive(true);
-		restartButton.SetActive(true);
-		mainMenuButton.SetActive(true);
-		skinMenuButton.SetActive(true);
+		if (selectedCharacter != 3)
+		{
+			leaderboardButton.SetActive(true);
+			submitButton.SetActive(true);
+			nameForScore.SetActive(true);
+			restartButton.SetActive(true);
+			mainMenuButton.SetActive(true);
+			skinMenuButton.SetActive(true);
+		}
+        else
+        {
+// Do I need to track the score I am getting?
+			print("restarting game");
+			this.RestartGame();
+        }
 	}
 
 	void SpawnObstacle()
@@ -143,6 +161,7 @@ public class GameControl : MonoBehaviour
 
 	void BoostTime()
 	{
+		print("time scale increased");
 		nextBoost = Time.unscaledTime + timeToBoost;
 		Time.timeScale += 0.25f;
 	}
@@ -161,6 +180,12 @@ public class GameControl : MonoBehaviour
 		SceneManager.LoadScene("Game");
 	}
 
+	public float getTime()
+    {
+		print("time scale: " + (Time.timeScale));
+		//print(Time.timeScale);
+		return Time.timeScale;
+    }
 	public int getScore()
     {
 		return yourScore;
